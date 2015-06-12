@@ -1,0 +1,30 @@
+{
+    "name" : "braune-digital/imagine-bundle",
+    "description" : "Imagine bundle",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Braune Digital GmbH",
+        "email" : "mail@braune-digital.com"
+    }],
+    "keywords" : [
+        "imagine bundle"
+    ],
+    "license" : [
+        "MIT"
+    ],
+    "require" : {
+    },
+    "autoload" : {
+        "psr-4" : {
+            "BrauneDigital\\ImagineBundle\\" : ""
+        }
+    },
+    "repositories" : [{
+    	
+    }],
+    "extra" : {
+    "branch-alias" : {
+            "dev-master" : "master-dev"
+        }
+    }
+}
