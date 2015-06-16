@@ -1,0 +1,15 @@
+services:
+
+    braunedigital.imagine.liip_imagine.filter.crop:
+        class: BrauneDigital\ImagineBundle\Imagine\Filter\Loader\CropFilterLoader
+        tags:
+            - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_crop' }
+
+    braunedigital.imagine.liip_imagine.filter.resize:
+        class: BrauneDigital\ImagineBundle\Imagine\Filter\Loader\RelativeResizeFilterLoader
+        tags:
+            - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_resize' }
+
+    braunedigital.media.resizer.crop:
+        class: BrauneDigital\ImagineBundle\Resizer\CropResizer
+        arguments: [@sonata.media.adapter.image.gd, 'outbound', @sonata.media.metadata.proxy]
