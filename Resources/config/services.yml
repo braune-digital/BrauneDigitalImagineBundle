@@ -13,6 +13,7 @@ services:
     braunedigital.media.resizer.crop:
         class: BrauneDigital\ImagineBundle\Resizer\CropResizer
         arguments: [@sonata.media.adapter.image.gd, 'outbound', @sonata.media.metadata.proxy]
+
     braunedigital.media_extension:
         class: BrauneDigital\ImagineBundle\Twig\MediaExtension
         arguments: [@sonata.media.pool, @sonata.media.manager.media]

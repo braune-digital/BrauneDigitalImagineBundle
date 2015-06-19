@@ -9,7 +9,7 @@ use Sonata\CoreBundle\Model\ManagerInterface;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Sonata\MediaBundle\Provider\Pool;
 
-class MediaExtension extends \Twig_Extension
+class MediaExtension extends \Sonata\MediaBundle\Twig\Extension\MediaExtension
 {
     protected $mediaService;
 
