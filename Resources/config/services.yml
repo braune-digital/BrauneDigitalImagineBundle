@@ -1,3 +1,6 @@
+parameters:
+    braunedigital_imagine_proxy: '/'
+
 services:
 
     braunedigital.imagine.liip_imagine.filter.crop:
@@ -19,3 +22,11 @@ services:
         arguments: [@sonata.media.pool, @sonata.media.manager.media]
         tags:
             - { name: twig.extension }
+
+    braunedigital.imagine.cache.resolver.proxy1:
+        class: Liip\ImagineBundle\Imagine\Cache\Resolver\ProxyResolver
+        arguments:
+            - "@liip_imagine.cache.resolver.default"
+            - [ '%braunedigital_imagine_proxy%' ]
+        tags:
+            - { name: 'liip_imagine.cache.resolver', resolver: 'proxy' }
