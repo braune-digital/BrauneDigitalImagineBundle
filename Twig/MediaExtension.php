@@ -86,7 +86,7 @@ class MediaExtension extends \Sonata\MediaBundle\Twig\Extension\MediaExtension
            ->getProvider($media->getProviderName());
 
 
-        return '/uploads/media/' . $provider->generatePath($media) . '/' .  $media->getProviderReference();
+        return $provider->generatePath($media) . '/' .  $media->getProviderReference();
     }
 
     /**
