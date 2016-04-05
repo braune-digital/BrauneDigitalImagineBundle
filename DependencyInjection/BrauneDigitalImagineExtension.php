@@ -18,8 +18,6 @@ class BrauneDigitalImagineExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $configs = $container->getExtensionConfig($this->getAlias());
-
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         if(isset($config['use_sonata_media_manager']) && $config['use_sonata_media_manager']) {
