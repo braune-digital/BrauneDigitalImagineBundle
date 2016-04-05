@@ -5,6 +5,7 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
 use Liip\ImagineBundle\Binary\BinaryInterface;
 use Liip\ImagineBundle\Imagine\Cache\Resolver\ResolverInterface;
 use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
+use Sonata\MediaBundle\Model\Media;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -25,12 +26,14 @@ class CacheManager extends BaseCacheManager
 	 */
 	public function getBrowserPathWithNewName($path, $filter, array $runtimeConfig = array(), $newName = 'null') {
 		$this->newName = $newName;
-		return $this->getBrowserPath($path, $filter, $runtimeConfig);
+		$result = $this->getBrowserPath($path, $filter, $runtimeConfig);
+		//prevent accidental multiple usages
+		$this->newName = null;
+		return $result;
 	}
 
 	public function getBrowserPath($path, $filter, array $runtimeConfig = array())
 	{
-
 		$newPath = $path;
 		if ($this->newName != null && $this->newName != 'null') {
 			$pathInfo = pathinfo($path);
