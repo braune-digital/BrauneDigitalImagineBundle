@@ -7,17 +7,8 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 //a little helper manager, if one is using SonataMediaBundle for MediaManagement
-class SonataMediaCacheManager extends CacheManager implements ContainerAwareInterface
+class SonataMediaCacheManager extends CacheManager
 {
-	protected $container;
-
-	/**
-	 * @param ContainerInterface|null $container
-	 */
-	public function setContainer(ContainerInterface $container = null) {
-		$this->container = $container;
-	}
-
 	/**
 	 * @param       $path
 	 * @param       $filter

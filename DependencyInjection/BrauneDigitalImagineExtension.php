@@ -20,6 +20,8 @@ class BrauneDigitalImagineExtension extends Extension
 
         $config = $this->processConfiguration(new Configuration(), $configs);
 
+        $container->setParameter('braune_digital_imagine.resolve_instant', (isset($config['resolve_instant']) && $config['resolve_instant']) ? true : false);
+
         if(isset($config['use_sonata_media_manager']) && $config['use_sonata_media_manager']) {
             $container->setParameter('liip_imagine.cache.manager.class', 'BrauneDigital\ImagineBundle\Imagine\Cache\SonataMediaCacheManager');
         }

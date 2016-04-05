@@ -2,21 +2,31 @@
 
 namespace BrauneDigital\ImagineBundle\Imagine\Cache;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
-use Liip\ImagineBundle\Binary\BinaryInterface;
-use Liip\ImagineBundle\Imagine\Cache\Resolver\ResolverInterface;
-use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
-use Sonata\MediaBundle\Model\Media;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\Event;
-use Liip\ImagineBundle\ImagineEvents;
-use Liip\ImagineBundle\Events\CacheResolveEvent;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class CacheManager extends BaseCacheManager
+class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 {
 
 	protected $newName;
+
+	protected $resolveInstant = false;
+
+	protected $container;
+
+	protected $dataManager;
+
+	protected $filterManager;
+	/**
+	 * @param ContainerInterface|null $container
+	 */
+	public function setContainer(ContainerInterface $container = null) {
+		$this->resolveInstant = $container->getParameter('braune_digital_imagine.resolve_instant');
+		$this->container = $container;
+
+		$this->dataManager = $this->container->get('liip_imagine.data.manager');
+		$this->filterManager = $this->container->get('liip_imagine.filter.manager');
+	}
 
 	/**
 	 * @param $path
@@ -41,19 +51,29 @@ class CacheManager extends BaseCacheManager
 		}
 
 		if (!empty($runtimeConfig)) {
-			$rcPath = $this->getRuntimePath($path, $runtimeConfig);
-			return $this->isStored($rcPath, $filter) ?
-				$this->resolve($rcPath, $filter) :
-				$this->generateUrl($path, $filter, $runtimeConfig, $this->newName)
-				;
+			$newPath = $this->getRuntimePath($path, $runtimeConfig);
+		} else {
+			$runtimeConfig = array();
 		}
 
-		return $this->isStored($newPath, $filter) ?
-			$this->resolve($newPath, $filter) :
-			$this->generateUrl($path, $filter, array(), $this->newName)
-			;
-	}
+		if($this->isStored($newPath, $filter)) {
+			return $this->resolve($newPath, $filter);
+		} else if($this->resolveInstant) {
 
+			$binary = $this->dataManager->find($filter, $path);
+
+			$convertedBinary = $this->filterManager->applyFilter($binary, $filter);
+
+			$this->store(
+				$convertedBinary,
+				$newPath,
+				$filter
+			);
+			return $this->resolve($newPath, $filter);
+		} else {
+			return $this->generateUrl($path, $filter, $runtimeConfig, $this->newName);
+		}
+	}
 
 	public function generateUrl($path, $filter, array $runtimeConfig = array(), $newName = 'null')
 	{
@@ -78,6 +98,4 @@ class CacheManager extends BaseCacheManager
 
         return $filterUrl;
 	}
-
-
 }
