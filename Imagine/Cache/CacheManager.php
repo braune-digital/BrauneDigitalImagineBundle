@@ -62,16 +62,14 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
 			try {
 				$binary = $this->dataManager->find($filter, $path);
-
 				$convertedBinary = $this->filterManager->applyFilter($binary, $filter);
-
 				$this->store(
 					$convertedBinary,
 					$newPath,
 					$filter
 				);
 				$path = $this->resolve($newPath, $filter);
-			} catch (NotLoadableException $e) {
+			} catch (\Exception $e) {
 				$path = '';
 			}
 			return $path;
