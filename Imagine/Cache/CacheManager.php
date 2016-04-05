@@ -32,7 +32,7 @@ class CacheManager extends BaseCacheManager
 	{
 
 		$newPath = $path;
-		if ($this->newName != 'null') {
+		if ($this->newName != null && $this->newName != 'null') {
 			$pathInfo = pathinfo($path);
 			$newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $path);
 		}
