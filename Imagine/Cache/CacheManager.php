@@ -1,6 +1,7 @@
 <?php
 
 namespace BrauneDigital\ImagineBundle\Imagine\Cache;
+use Liip\ImagineBundle\Exception\Binary\Loader\NotLoadableException;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
 use Liip\ImagineBundle\Binary\BinaryInterface;
 use Liip\ImagineBundle\Imagine\Cache\Resolver\ResolverInterface;
@@ -45,10 +46,29 @@ class CacheManager extends BaseCacheManager
 				;
 		}
 
-		return $this->isStored($newPath, $filter) ?
-			$this->resolve($newPath, $filter) :
-			$this->generateUrl($path, $filter, array(), $this->newName)
-			;
+		if($this->isStored($newPath, $filter)) {
+			return $this->resolve($newPath, $filter);
+		} else if($this->resolveInstant) {
+
+			try {
+				$binary = $this->dataManager->find($filter, $path);
+
+				$convertedBinary = $this->filterManager->applyFilter($binary, $filter);
+
+				$this->store(
+					$convertedBinary,
+					$newPath,
+					$filter
+				);
+				$path = $this->resolve($newPath, $filter);
+			} catch (NotLoadableException $e) {
+				$path = '';
+			}
+			return $path;
+
+		} else {
+			return $this->generateUrl($path, $filter, $runtimeConfig, $this->newName);
+		}
 	}
 
 
