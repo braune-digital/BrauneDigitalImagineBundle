@@ -59,10 +59,10 @@ class CacheManager extends BaseCacheManager
 			'filter' => $filter
 		);
 
-		if ($newName != null && $newName != 'null') {
+		if ($newName != null) {
 			$params['newName'] = $newName;
 		} else {
-			$params['newName'] = null;
+			$params['newName'] = 'null';
 		}
 
         if (empty($runtimeConfig)) {
