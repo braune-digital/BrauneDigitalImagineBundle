@@ -16,6 +16,11 @@ services:
         tags:
             - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_resize' }
 
+    braunedigital.imagine.liip_imagine.filter.grayscale:
+        class: 'BrauneDigital\ImagineBundle\Imagine\Filter\Loader\Grayscale'
+        tags:
+            - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_greyscale' }
+
     braunedigital.media.resizer.crop:
         class: 'BrauneDigital\ImagineBundle\Resizer\CropResizer'
         arguments: ['@sonata.media.adapter.image.gd', 'outbound', '@sonata.media.metadata.proxy']
