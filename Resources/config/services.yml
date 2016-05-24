@@ -17,7 +17,7 @@ services:
             - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_resize' }
 
     braunedigital.imagine.liip_imagine.filter.grayscale:
-        class: 'BrauneDigital\ImagineBundle\Imagine\Filter\Loader\Grayscale'
+        class: 'BrauneDigital\ImagineBundle\Imagine\Filter\Loader\GrayScale'
         tags:
             - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_greyscale' }
 

@@ -7,7 +7,7 @@ use Imagine\Gd\Effects;
 use Imagine\Image\ImageInterface;
 use Liip\ImagineBundle\Imagine\Filter\Loader\LoaderInterface;
 
-class Grayscale implements LoaderInterface {
+class GrayScale implements LoaderInterface {
 
 
 
