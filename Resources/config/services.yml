@@ -21,6 +21,12 @@ services:
         tags:
             - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_greyscale' }
 
+    braunedigital.imagine.liip_imagine.filter.crop_center:
+        class: 'BrauneDigital\ImagineBundle\Imagine\Filter\Loader\CropAndCenterLoader'
+        arguments: ['@liip_imagine', '@logger']
+        tags:
+            - { name: 'liip_imagine.filter.loader', loader: 'braunedigital_imagine_crop_center' }
+
     braunedigital.media.resizer.crop:
         class: 'BrauneDigital\ImagineBundle\Resizer\CropResizer'
         arguments: ['@sonata.media.adapter.image.gd', 'outbound', '@sonata.media.metadata.proxy']
