@@ -51,7 +51,11 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 		}
 
 		if (!empty($runtimeConfig)) {
-			$newPath = $this->getRuntimePath($path, $runtimeConfig);
+			if ($this->newName != null && $this->newName != 'null') {
+				$newPath = $this->getRuntimePath($path, $runtimeConfig);
+				$pathInfo = pathinfo($path);
+				$newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $path);
+			}
 		} else {
 			$runtimeConfig = array();
 		}
@@ -62,13 +66,25 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
 			try {
 				$binary = $this->dataManager->find($filter, $path);
-				$convertedBinary = $this->filterManager->applyFilter($binary, $filter, $runtimeConfig);
-				$this->store(
-					$convertedBinary,
-					$newPath,
-					$filter
-				);
-				$path = $this->resolve($newPath, $filter);
+				if (empty($runtimeConfig)) {
+					$convertedBinary = $this->filterManager->applyFilter($binary, $filter);
+					$this->store(
+						$convertedBinary,
+						$newPath,
+						$filter
+					);
+					$path = $this->resolve($newPath, $filter);
+				} else {
+					$rcPath = $this->getRuntimePath($newPath, $runtimeConfig);
+					$this->store(
+						$this->filterManager->applyFilter($binary, $filter, array(
+							'filters' => $runtimeConfig,
+						)),
+						$rcPath,
+						$filter
+					);
+					$path = $this->resolve($rcPath, $filter);
+				}
 			} catch (\Exception $e) {
 				$path = '';
 			}
@@ -80,6 +96,8 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
 	public function generateUrl($path, $filter, array $runtimeConfig = array(), $newName = 'null')
 	{
+
+
 		$params = array(
 			'path' => ltrim($path, '/'),
 			'filter' => $filter
