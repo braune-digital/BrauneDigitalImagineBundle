@@ -44,6 +44,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
 	public function getBrowserPath($path, $filter, array $runtimeConfig = array())
 	{
+
 		$newPath = $path;
 		if ($this->newName != null && $this->newName != 'null') {
 			$pathInfo = pathinfo($path);
@@ -51,7 +52,11 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 		}
 
 		if (!empty($runtimeConfig)) {
-			$newPath = $this->getRuntimePath($path, $runtimeConfig);
+			if ($this->newName != null && $this->newName != 'null') {
+				$newPath = $this->getRuntimePath($path, $runtimeConfig);
+				$pathInfo = pathinfo($newPath);
+				$newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $newPath);
+			}
 		} else {
 			$runtimeConfig = array();
 		}
@@ -62,15 +67,31 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
 			try {
 				$binary = $this->dataManager->find($filter, $path);
-				$convertedBinary = $this->filterManager->applyFilter($binary, $filter, $runtimeConfig);
-				$this->store(
-					$convertedBinary,
-					$newPath,
-					$filter
-				);
-				$path = $this->resolve($newPath, $filter);
+				if (empty($runtimeConfig)) {
+					$convertedBinary = $this->filterManager->applyFilter($binary, $filter);
+					$this->store(
+						$convertedBinary,
+						$newPath,
+						$filter
+					);
+					$path = $this->resolve($newPath, $filter);
+				} else {
+					$rcPath = $newPath;
+					$filterConfig = array();
+					if (!empty($runtimeConfig)) {
+						$filterConfig = array(
+							'filters' => $runtimeConfig,
+						);
+					}
+					$this->store(
+						$this->filterManager->applyFilter($binary, $filter, $filterConfig),
+						$rcPath,
+						$filter
+					);
+					$path = $this->resolve($rcPath, $filter);
+				}
 			} catch (\Exception $e) {
-				$path = '';
+				$path = $filter . ': ' . json_encode($runtimeConfig) . ': ' . $e->getMessage();
 			}
 			return $path;
 		} else {
@@ -80,6 +101,8 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
 	public function generateUrl($path, $filter, array $runtimeConfig = array(), $newName = 'null')
 	{
+
+
 		$params = array(
 			'path' => ltrim($path, '/'),
 			'filter' => $filter

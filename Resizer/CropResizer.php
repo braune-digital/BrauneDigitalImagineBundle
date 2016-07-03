@@ -5,11 +5,11 @@ namespace BrauneDigital\ImagineBundle\Resizer;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Box;
 use Gaufrette\File;
-use Sonata\MediaBundle\Model\MediaInterface;
 use Imagine\Image\ImageInterface;
 use Imagine\Exception\InvalidArgumentException;
 use Sonata\MediaBundle\Metadata\MetadataBuilderInterface;
 use Sonata\MediaBundle\Resizer\ResizerInterface;
+use Sonata\MediaBundle\Model\MediaInterface;
 
 class CropResizer implements ResizerInterface
 {

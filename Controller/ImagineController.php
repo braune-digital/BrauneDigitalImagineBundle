@@ -33,7 +33,6 @@ class ImagineController extends BaseController
     public function filterWithNewNameAction(Request $request, $filter, $newName, $path = '')
     {
 
-
 		$newPath = $path;
 		if ($newName != 'null') {
 			$pathInfo = pathinfo($path);
@@ -86,6 +85,7 @@ class ImagineController extends BaseController
 			$pathInfo = pathinfo($path);
 			$newPath = str_replace($pathInfo['basename'], $newName . '.' . $pathInfo['extension'], $path);
 		}
+
 
         try {
             $filters = $request->query->get('filters', array());
