@@ -44,6 +44,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
 	public function getBrowserPath($path, $filter, array $runtimeConfig = array())
 	{
+
 		$newPath = $path;
 		if ($this->newName != null && $this->newName != 'null') {
 			$pathInfo = pathinfo($path);
@@ -53,8 +54,8 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 		if (!empty($runtimeConfig)) {
 			if ($this->newName != null && $this->newName != 'null') {
 				$newPath = $this->getRuntimePath($path, $runtimeConfig);
-				$pathInfo = pathinfo($path);
-				$newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $path);
+				$pathInfo = pathinfo($newPath);
+				$newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $newPath);
 			}
 		} else {
 			$runtimeConfig = array();
@@ -75,18 +76,22 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 					);
 					$path = $this->resolve($newPath, $filter);
 				} else {
-					$rcPath = $this->getRuntimePath($newPath, $runtimeConfig);
-					$this->store(
-						$this->filterManager->applyFilter($binary, $filter, array(
+					$rcPath = $newPath;
+					$filterConfig = array();
+					if (!empty($runtimeConfig)) {
+						$filterConfig = array(
 							'filters' => $runtimeConfig,
-						)),
+						);
+					}
+					$this->store(
+						$this->filterManager->applyFilter($binary, $filter, $filterConfig),
 						$rcPath,
 						$filter
 					);
 					$path = $this->resolve($rcPath, $filter);
 				}
 			} catch (\Exception $e) {
-				$path = '';
+				$path = $filter . ': ' . json_encode($runtimeConfig) . ': ' . $e->getMessage();
 			}
 			return $path;
 		} else {
