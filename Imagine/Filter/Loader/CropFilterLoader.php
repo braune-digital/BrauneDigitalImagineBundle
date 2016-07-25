@@ -24,23 +24,44 @@ class CropFilterLoader implements LoaderInterface
 		$y = (isset($options['size'][3])) ? $options['size'][3] : false;
 
 		$size = $image->getSize();
-		$factor = $width / $size->getWidth();
 
-		if ($size->getWidth() > $size->getHeight()) {
-			$format = 'landscape';
-		} else {
-			$format = 'portrait';
-		}
 
 		if (is_int($x) && is_int($y)) {
+
 			$point = new Point($x, $y);
 			$size = $image->getSize();
 			$filter = new Crop($point, new Box($width, $height));
 			$image = $filter->apply($image);
+
+			if (isset($options['resize']) && isset($options['resize'][0]) && isset($options['resize'][1])) {
+
+				$size = $image->getSize();
+				$factor = $options['resize'][0] / $size->getWidth();
+
+				if ($factor * $size->getHeight() < $options['resize'][1]) {
+					$filter = new RelativeResize('heighten', $options['resize'][1]);
+					$filter->apply($image);
+				} else {
+					$filter = new RelativeResize('widen', $options['resize'][0]);
+					$filter->apply($image);
+				}
+
+				$size = $image->getSize();
+
+				$x = abs(ceil(($size->getWidth() - $options['resize'][0]) / 2));
+				$y = abs(ceil(($size->getHeight() - $options['resize'][1]) / 2));
+
+				$point = new Point($x, $y);
+				$filter = new Crop($point, new Box($options['resize'][0], $options['resize'][1]));
+				$image = $filter->apply($image);
+
+				$image->resize(new Box($options['resize'][0], $options['resize'][1]));
+			}
+
 		} else {
 
+			$factor = $width / $size->getWidth();
 			if ($factor * $size->getHeight() < $height) {
-				$factor = $height / $size->getHeight();
 				$filter = new RelativeResize('heighten', $height);
 				$filter->apply($image);
 			} else {
@@ -52,8 +73,6 @@ class CropFilterLoader implements LoaderInterface
 			$y = abs(ceil(($image->getSize()->getHeight() - $height) / 2));
 
 			$point = new Point($x, $y);
-
-			$size = $image->getSize();
 			$filter = new Crop($point, new Box($width, $height));
 			$image = $filter->apply($image);
 
