@@ -13,7 +13,7 @@
         "MIT"
     ],
     "require" : {
-        "liip/imagine-bundle": "1.2.2"
+        "liip/imagine-bundle": "^1.5"
     },
     "autoload" : {
         "psr-4" : {
