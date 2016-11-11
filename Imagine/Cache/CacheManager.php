@@ -42,7 +42,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 		return $result;
 	}
 
-	public function getBrowserPath($path, $filter, array $runtimeConfig = array())
+	public function getBrowserPath($path, $filter, array $runtimeConfig = array(), $resolver = null)
 	{
 
 		$newPath = $path;
