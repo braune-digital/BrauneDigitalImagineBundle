@@ -91,7 +91,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 					$path = $this->resolve($rcPath, $filter);
 				}
 			} catch (\Exception $e) {
-				$path = $filter . ': ' . json_encode($runtimeConfig) . ': ' . $e->getMessage();
+				$path = null;
 			}
 			return $path;
 		} else {
