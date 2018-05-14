@@ -4,6 +4,7 @@ namespace BrauneDigital\ImagineBundle\Imagine\Cache;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 {
@@ -35,6 +36,8 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 	 * @param $newName
 	 */
 	public function getBrowserPathWithNewName($path, $filter, array $runtimeConfig = array(), $newName = 'null') {
+
+
 		$this->newName = $newName;
 		$result = $this->getBrowserPath($path, $filter, $runtimeConfig);
 		//prevent accidental multiple usages
@@ -42,7 +45,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 		return $result;
 	}
 
-	public function getBrowserPath($path, $filter, array $runtimeConfig = array())
+	public function getBrowserPath($path, $filter, array $runtimeConfig = array(), $resolver = null)
 	{
 
 		$newPath = $path;
@@ -91,10 +94,12 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 					$path = $this->resolve($rcPath, $filter);
 				}
 			} catch (\Exception $e) {
-				$path = null;
+				$path = $filter . ': ' . json_encode($runtimeConfig) . ': ' . $e->getMessage();
 			}
+
 			return $path;
 		} else {
+
 			return $this->generateUrl($path, $filter, $runtimeConfig, $this->newName);
 		}
 	}
@@ -113,13 +118,12 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 		} else {
 			$params['newName'] = 'null';
 		}
-
 		if (empty($runtimeConfig)) {
-			$filterUrl = $this->router->generate('liip_imagine_filter', $params, false);
+			$filterUrl = $this->router->generate('liip_imagine_filter', $params, UrlGeneratorInterface::ABSOLUTE_URL);
 		} else {
 			$params['filters'] = $runtimeConfig;
 			$params['hash'] = $this->signer->sign($path, $runtimeConfig);
-			$filterUrl = $this->router->generate('liip_imagine_filter_runtime', $params, false);
+			$filterUrl = $this->router->generate('liip_imagine_filter_runtime', $params, UrlGeneratorInterface::ABSOLUTE_URL);
 		}
 
 		return $filterUrl;

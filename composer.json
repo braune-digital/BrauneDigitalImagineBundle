@@ -1,23 +1,27 @@
 {
-    "name" : "braune-digital/imagine-bundle",
-    "description" : "Imagine bundle",
-    "type" : "symfony-bundle",
-    "authors" : [{
-        "name" : "Braune Digital GmbH",
-        "email" : "mail@braune-digital.com"
-    }],
-    "keywords" : [
-        "imagine bundle"
-    ],
-    "license" : [
-        "MIT"
-    ],
-    "require" : {
-        "liip/imagine-bundle": "1.2.2"
-    },
-    "autoload" : {
-        "psr-4" : {
-            "BrauneDigital\\ImagineBundle\\" : ""
-        }
+  "name": "braune-digital/imagine-bundle",
+  "description": "Imagine bundle",
+  "type": "symfony-bundle",
+  "authors": [
+    {
+      "name": "Braune Digital GmbH",
+      "email": "mail@braune-digital.com"
     }
+  ],
+  "keywords": [
+    "imagine bundle"
+  ],
+  "license": [
+    "MIT"
+  ],
+  "require": {
+    "php": "^5.3.9|^7.0",
+    "liip/imagine-bundle": "^1.9",
+    "symfony/symfony": "~2.3|~3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "BrauneDigital\\ImagineBundle\\": ""
+    }
+  }
 }
