@@ -142,7 +142,11 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
     {
         $exploded = explode('/', $name);
         $pathParts = pathinfo($exploded[count($exploded) - 1]);
-        $exploded[count($exploded) - 1] = Transliterator::transliterate($pathParts['filename']) . '.' . $pathParts['extension'];
+        $name = Transliterator::transliterate($pathParts['filename']);
+        if (isset($pathParts['extension'])) {
+            $name .= '.' . $pathParts['extension'];
+        }
+        $exploded[count($exploded) - 1] = $name;
         return implode('/', $exploded);
     }
 }
