@@ -140,7 +140,9 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
      */
     public function slugGenerator($name)
     {
-        $name = str_replace('\'', '-', $name);
-        return Transliterator::transliterate($name);
+        $exploded = explode('/', $name);
+        $pathParts = pathinfo($exploded[count($exploded) - 1]);
+        $exploded[count($exploded) - 1] = Transliterator::transliterate($pathParts['filename']) . '.' . $pathParts['extension'];
+        return implode('/', $exploded);
     }
 }
