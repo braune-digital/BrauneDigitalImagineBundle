@@ -6,7 +6,6 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Transliterator;
 
 class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 {
