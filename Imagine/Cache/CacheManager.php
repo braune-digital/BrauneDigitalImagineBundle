@@ -1,7 +1,6 @@
 <?php
 
 namespace BrauneDigital\ImagineBundle\Imagine\Cache;
-use Behat\Transliterator\Transliterator;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -151,6 +150,6 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
     private function transformSlugParts(string $part){
         $part = str_replace('\'', '-', $part);
-        return Transliterator::transliterate($part);
+        return \Behat\Transliterator\Transliterator::transliterate($part);
     }
 }
