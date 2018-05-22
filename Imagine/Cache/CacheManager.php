@@ -6,6 +6,7 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Transliterator;
 
 class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 {
@@ -140,7 +141,17 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
      */
     public function slugGenerator($name)
     {
-        $name = str_replace('\'', '-', $name);
-        return Transliterator::transliterate($name);
+        $pathParts = pathinfo($name);
+        if (!isset($pathParts['extension'])) {
+            return $name;
+        }
+        $exploded = explode('/',$pathParts['dirname']);
+        $slug = array_map([$this, 'transformSlugParts'], $exploded);
+        return implode('/', $slug) . $this->transformSlugParts($pathParts['filename'] .'.'. $pathParts['extension']);
+    }
+
+    private function transformSlugParts(string $part){
+        $part = str_replace('\'', '-', $part);
+        return Transliterator::transliterate($part);
     }
 }
