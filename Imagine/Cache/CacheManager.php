@@ -145,7 +145,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         }
         $exploded = explode('/',$pathParts['dirname']);
         $slug = array_map([$this, 'transformSlugParts'], $exploded);
-        return implode('/', $slug) . $this->transformSlugParts($pathParts['filename'] .'.'. $pathParts['extension']);
+        return implode('/', $slug) . $this->transformSlugParts($pathParts['filename']) .'.'. $pathParts['extension'];
     }
 
     private function transformSlugParts(string $part){
