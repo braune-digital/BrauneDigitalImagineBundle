@@ -16,7 +16,7 @@
   ],
   "require": {
     "php": "^5.3.9|^7.0",
-    "liip/imagine-bundle": "^2.1.0",
+    "liip/imagine-bundle": "^1.2|^2.1",
     "symfony/symfony": "~2.3|^3.0|^4.1",
     "behat/transliterator": "~1.2"
   },
