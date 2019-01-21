@@ -54,20 +54,18 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         $newPath = $path;
         if ($this->newName != null && $this->newName != 'null') {
             $pathInfo = pathinfo($path);
-            $newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $path);
+            $newPath = str_replace($pathInfo['basename'], $this->slugGenerator($this->newName) . '.' . $pathInfo['extension'], $path);
         }
 
         if (!empty($runtimeConfig)) {
             if ($this->newName != null && $this->newName != 'null') {
                 $newPath = $this->getRuntimePath($path, $runtimeConfig);
                 $pathInfo = pathinfo($newPath);
-                $newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $newPath);
+                $newPath = str_replace($pathInfo['basename'], $this->slugGenerator($this->newName) . '.' . $pathInfo['extension'], $newPath);
             }
         } else {
             $runtimeConfig = array();
         }
-
-        $newPath = $this->slugGenerator($newPath);
 
         if($this->isStored($newPath, $filter)) {
             return $this->resolve($newPath, $filter);
