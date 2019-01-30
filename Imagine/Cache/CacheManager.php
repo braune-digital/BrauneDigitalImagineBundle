@@ -54,19 +54,21 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         $newPath = $path;
         if ($this->newName != null && $this->newName != 'null') {
             $pathInfo = pathinfo($path);
-            $newPath = str_replace($pathInfo['basename'], $this->slugGenerator($this->newName) . '.' . $pathInfo['extension'], $path);
+            $newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $path);
         }
 
         if (!empty($runtimeConfig)) {
             if ($this->newName != null && $this->newName != 'null') {
                 $newPath = $this->getRuntimePath($path, $runtimeConfig);
                 $pathInfo = pathinfo($newPath);
-                $newPath = str_replace($pathInfo['basename'], $this->slugGenerator($this->newName) . '.' . $pathInfo['extension'], $newPath);
+                $newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $newPath);
             }
         } else {
             $runtimeConfig = array();
         }
-        
+
+        $newPath = $this->slugGenerator($newPath);
+
         if($this->isStored($newPath, $filter)) {
             return $this->resolve($newPath, $filter);
         } else if($this->resolveInstant) {
@@ -143,7 +145,8 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         }
         $exploded = explode('/',$pathParts['dirname']);
         $slug = array_map([$this, 'transformSlugParts'], $exploded);
-        return implode('/', $slug) . $this->transformSlugParts($pathParts['filename']) .'.'. $pathParts['extension'];
+        $filename = str_replace('.' . $pathParts['extension'], '', $pathParts['filename']);
+        return implode('/', $slug) . '/' . $this->transformSlugParts($filename) .'.'. $pathParts['extension'];
     }
 
     private function transformSlugParts(string $part){
