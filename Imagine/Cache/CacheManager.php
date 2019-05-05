@@ -70,7 +70,6 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         }
 
         $newPath = $this->slugGenerator($newPath);
-
         if($this->isStored($newPath, $filter)) {
             return $this->resolve($newPath, $filter);
         } else if($this->resolveInstant) {
@@ -147,7 +146,11 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         }
         $exploded = explode('/',$pathParts['dirname']);
         $slug = array_map([$this, 'transformSlugParts'], $exploded);
+<<<<<<< Updated upstream
         return implode('/', $slug) . $this->transformSlugParts($pathParts['filename'] .'.'. $pathParts['extension']);
+=======
+        return implode('/', $slug) .'/'. $this->transformSlugParts($pathParts['filename']) .'.'. $pathParts['extension'];
+>>>>>>> Stashed changes
     }
 
     private function transformSlugParts(string $part){
