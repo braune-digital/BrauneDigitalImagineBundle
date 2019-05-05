@@ -6,7 +6,6 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Transliterator;
 
 class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 {
@@ -146,11 +145,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         }
         $exploded = explode('/',$pathParts['dirname']);
         $slug = array_map([$this, 'transformSlugParts'], $exploded);
-<<<<<<< Updated upstream
-        return implode('/', $slug) . $this->transformSlugParts($pathParts['filename'] .'.'. $pathParts['extension']);
-=======
         return implode('/', $slug) .'/'. $this->transformSlugParts($pathParts['filename']) .'.'. $pathParts['extension'];
->>>>>>> Stashed changes
     }
 
     private function transformSlugParts(string $part){
