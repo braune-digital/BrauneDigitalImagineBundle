@@ -35,7 +35,7 @@ services:
         class: 'BrauneDigital\ImagineBundle\Twig\MediaExtension'
         arguments: ['@sonata.media.pool', '@sonata.media.manager.media']
         tags:
-            - { name: twig.extension }
+            - { name: twig.runtime }
 
     braunedigital.imagine.cache.resolver.proxy1:
         class: 'Liip\ImagineBundle\Imagine\Cache\Resolver\ProxyResolver'
