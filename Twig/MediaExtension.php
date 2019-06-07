@@ -31,8 +31,8 @@ class MediaExtension extends \Sonata\MediaBundle\Twig\Extension\MediaExtension
 
 	public function getFunctions()
 	{
-		$functions = array(
-			new \Twig_SimpleFunction('original_file_path', array($this, 'getOriginalFilePath')),
+	    $functions = array(
+			new \Twig_Function('original_file_path', array($this, 'getOriginalFilePath')),
 		);
 
 		return $functions;
