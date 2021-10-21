@@ -1,14 +1,15 @@
 <?php
 
 namespace BrauneDigital\ImagineBundle\Imagine\Cache;
+
 use Liip\ImagineBundle\Imagine\Cache\CacheManager as BaseCacheManager;
+use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 {
-
     protected $newName;
 
     protected $resolveInstant = false;
@@ -21,6 +22,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
     protected $dataManager;
 
     protected $filterManager;
+
     /**
      * @param ContainerInterface|null $container
      */
@@ -38,9 +40,8 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
      * @param array $runtimeConfig
      * @param $newName
      */
-    public function getBrowserPathWithNewName($path, $filter, array $runtimeConfig = array(), $newName = 'null') {
-
-
+    public function getBrowserPathWithNewName($path, $filter, array $runtimeConfig = array(), $newName = 'null')
+    {
         $this->newName = $newName;
         $result = $this->getBrowserPath($path, $filter, $runtimeConfig);
         //prevent accidental multiple usages
@@ -51,32 +52,21 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
     public function getBrowserPath(
         $path,
         $filter,
-        array $runtimeConfig = array(),
+        array $runtimeConfig = [],
         $resolver = null,
         $referenceType = UrlGeneratorInterface::ABSOLUTE_URL
-    ) {
-        $newPath = $path;
-        if ($this->newName != null && $this->newName != 'null') {
-            $pathInfo = pathinfo($path);
-            $newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $path);
-        }
+    ): string {
+        $newPath = $this->generateNewPath($filter, $path);
 
-        if (!empty($runtimeConfig)) {
-            if ($this->newName != null && $this->newName != 'null') {
-                $newPath = $this->getRuntimePath($path, $runtimeConfig);
-                $pathInfo = pathinfo($newPath);
-                $newPath = str_replace($pathInfo['basename'], $this->newName . '.' . $pathInfo['extension'], $newPath);
-            }
-        } else {
-            $runtimeConfig = array();
-        }
+        $runtimeConfig = empty($runtimeConfig)
+            ? []
+            : $runtimeConfig;
 
         $newPath = $this->slugGenerator($newPath);
 
-        if($this->isStored($newPath, $filter)) {
+        if ($this->isStored($newPath, $filter)) {
             return $this->resolve($newPath, $filter);
         } else if($this->resolveInstant) {
-
             try {
                 $binary = $this->dataManager->find($filter, $path);
                 if (empty($runtimeConfig)) {
@@ -108,9 +98,31 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
             return $path;
         } else {
-
             return $this->generateUrl($path, $filter, $runtimeConfig);
         }
+    }
+
+    private function generateNewPath(
+        string $filter,
+        string $path
+    ): string {
+        if ($this->newName === null || $this->newName === 'null') {
+            return $path;
+        }
+
+        /** @var FilterConfiguration $filtersConfiguration */
+        $filtersConfiguration = $this->filterManager->getFilterConfiguration();
+        $filterConfiguration = $filtersConfiguration->get($filter);
+        $pathInfo = pathinfo($path);
+        $extension = $filterConfiguration['format'] ?? $pathInfo['extension'];
+        $newPath = !empty($runtimeConfig)
+            ? $this->getRuntimePath($path, $runtimeConfig)
+            : $path;
+
+        $newNameWithoutExtension = str_replace('.'.$pathInfo['extension'], '', $this->newName);
+        $newNameWithExtension = $newNameWithoutExtension.'.'.$extension;
+
+        return str_replace($pathInfo['basename'], $newNameWithExtension, $newPath);
     }
 
     public function generateUrl(
@@ -119,7 +131,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         array $runtimeConfig = array(),
         $resolver = null,
         $referenceType = UrlGeneratorInterface::ABSOLUTE_URL
-    ) {
+    ): string {
         $params = array(
             'path' => ltrim($path, '/'),
             'filter' => $filter

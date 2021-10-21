@@ -16,7 +16,7 @@
   ],
   "require": {
     "php": "^5.3.9|^7.0",
-    "liip/imagine-bundle": "^1.2|^2.1|^2.4.0",
+    "liip/imagine-bundle": "^1.2|^2.1|^2.6",
     "symfony/dependency-injection": "^3.4|^4.0",
     "symfony/form": "^3.4|^4.0",
     "symfony/validator": "^3.4|^4.0",
