@@ -48,9 +48,13 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         return $result;
     }
 
-    public function getBrowserPath($path, $filter, array $runtimeConfig = array(), $resolver = null)
-    {
-
+    public function getBrowserPath(
+        $path,
+        $filter,
+        array $runtimeConfig = array(),
+        $resolver = null,
+        $referenceType = UrlGeneratorInterface::ABSOLUTE_URL
+    ) {
         $newPath = $path;
         if ($this->newName != null && $this->newName != 'null') {
             $pathInfo = pathinfo($path);
@@ -105,21 +109,24 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
             return $path;
         } else {
 
-            return $this->generateUrl($path, $filter, $runtimeConfig, $this->newName);
+            return $this->generateUrl($path, $filter, $runtimeConfig);
         }
     }
 
-    public function generateUrl($path, $filter, array $runtimeConfig = array(), $newName = 'null')
-    {
-
-
+    public function generateUrl(
+        $path,
+        $filter,
+        array $runtimeConfig = array(),
+        $resolver = null,
+        $referenceType = UrlGeneratorInterface::ABSOLUTE_URL
+    ) {
         $params = array(
             'path' => ltrim($path, '/'),
             'filter' => $filter
         );
 
-        if ($newName != null) {
-            $params['newName'] = $newName;
+        if ($this->newName != null) {
+            $params['newName'] = $this->newName;
         } else {
             $params['newName'] = 'null';
         }
