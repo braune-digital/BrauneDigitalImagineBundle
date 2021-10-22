@@ -56,7 +56,7 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
         $resolver = null,
         $referenceType = UrlGeneratorInterface::ABSOLUTE_URL
     ): string {
-        $newPath = $this->generateNewPath($filter, $path);
+        $newPath = $this->generateNewPath($filter, $path, $runtimeConfig);
 
         $runtimeConfig = empty($runtimeConfig)
             ? []
@@ -104,7 +104,8 @@ class CacheManager extends BaseCacheManager implements ContainerAwareInterface
 
     private function generateNewPath(
         string $filter,
-        string $path
+        string $path,
+        array $runtimeConfig = []
     ): string {
         if ($this->newName === null || $this->newName === 'null') {
             return $path;
